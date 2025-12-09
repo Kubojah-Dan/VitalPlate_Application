@@ -29,6 +29,6 @@ export const enrichRecipeMacrosWithNinjas = async (recipe) => {
     };
   } catch (err) {
     console.error('API Ninjas error:', err.message);
-    return recipe; // fallback: keep existing macros
+    return recipe;
   }
 };

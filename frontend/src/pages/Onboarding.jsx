@@ -46,35 +46,31 @@ const Onboarding = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      setIsLoading(true);
+  try {
+    setIsLoading(true);
 
-      const profile = {
-        ...formData,
-        age: parseInt(formData.age) || 0,
-        weight: parseInt(formData.weight) || 0
-      };
+    const profile = {
+      ...formData,
+      age: parseInt(formData.age),
+      weight: parseInt(formData.weight),
+    };
 
-      const plan = await apiFetch('/plan/generate', {
-        method: 'POST',
-        token,
-        body: { profile }
-      });
+    const result = await apiFetch("/plan/generate", {
+      method: "POST",
+      token, // ⬅ IMPORTANT
+      body: profile,
+    });
 
-      // Update user profile locally
-      if (user) {
-        login(token, { ...user, profile });
-      }
+    login(token, { ...user, profile }); // Update locally
+    navigate("/dashboard");
 
-      console.log('Generated plan:', plan);
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Onboarding error', err.message);
-      alert(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error("Onboarding error:", err.message);
+    alert(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const nextStep = () => setStep((s) => Math.min(3, s + 1));
   const prevStep = () => setStep((s) => Math.max(1, s - 1));
@@ -282,3 +278,4 @@ const Onboarding = () => {
 };
 
 export default Onboarding;
+

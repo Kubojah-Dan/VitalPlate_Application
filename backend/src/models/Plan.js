@@ -1,62 +1,87 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const ingredientSchema = new mongoose.Schema(
+const MacroSchema = new mongoose.Schema(
+  {
+    calories: { type: Number, default: 0 },
+    protein: { type: Number, default: 0 },
+    carbs: { type: Number, default: 0 },
+    fats: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
+const IngredientSchema = new mongoose.Schema(
   {
     name: String,
     amount: String,
-    category: String
+    category: String,
   },
   { _id: false }
 );
 
-const macrosSchema = new mongoose.Schema(
-  {
-    calories: Number,
-    protein: Number,
-    carbs: Number,
-    fats: Number
-  },
-  { _id: false }
-);
-
-const recipeSchema = new mongoose.Schema(
+const RecipeSchema = new mongoose.Schema(
   {
     id: String,
     name: String,
     description: String,
-    mealType: String,   // 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack'
+    mealType: String,
     prepTime: Number,
     healthBenefit: String,
-    ingredients: [ingredientSchema],
+    ingredients: [IngredientSchema],
     instructions: [String],
-    macros: macrosSchema,
+    macros: MacroSchema,
     image: String,
-    source: String      // 'gemini' | 'mealdb' | 'ninjas'
   },
   { _id: false }
 );
 
-const dayPlanSchema = new mongoose.Schema(
+const DayPlanSchema = new mongoose.Schema(
   {
-    day: String, // 'Monday', 'Tuesday',...
+    day: String,
     meals: {
-      Breakfast: recipeSchema,
-      Lunch: recipeSchema,
-      Dinner: recipeSchema,
-      Snack: recipeSchema
-    }
+      Breakfast: { type: RecipeSchema, default: null },
+      Lunch: { type: RecipeSchema, default: null },
+      Dinner: { type: RecipeSchema, default: null },
+      Snack: { type: RecipeSchema, default: null },
+    },
   },
   { _id: false }
 );
 
-const planSchema = new mongoose.Schema(
+const PlanSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    weekStart: { type: Date, default: Date.now },
-    days: [dayPlanSchema]
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      unique: true,
+      required: true,
+    },
+    profileSnapshot: { type: Object },
+
+    // Option 2: weekly plan + grocery + summary
+    weeklyPlan: {
+      type: Map,
+      of: DayPlanSchema,
+      default: {},
+    },
+
+    groceryList: [
+      {
+        name: String,
+        amount: String,
+        category: String,
+      },
+    ],
+
+    nutritionSummary: {
+      totalCalories: { type: Number, default: 0 },
+      totalProtein: { type: Number, default: 0 },
+      totalCarbs: { type: Number, default: 0 },
+      totalFats: { type: Number, default: 0 },
+    },
   },
   { timestamps: true }
 );
 
-const Plan = mongoose.model('Plan', planSchema);
+const Plan = mongoose.model("Plan", PlanSchema);
 export default Plan;

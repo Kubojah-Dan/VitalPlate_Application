@@ -1,29 +1,31 @@
-import React from "react";
+import { Menu, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
 
-const Navbar = () => {
-  const { user, logout } = useAuth();
-
+const Navbar = ({ onToggleSidebar }) => {
   return (
-    <nav className="bg-vp-card/80 backdrop-blur-md border-b border-slate-800 p-4 flex justify-between items-center">
-      <Link to="/dashboard" className="font-bold text-xl text-colorful-gradient">
-        VitalPlate
-      </Link>
+    <nav className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
 
-      <div className="flex gap-4">
-        <Link to="/planner">Planner</Link>
-        <Link to="/grocery">Grocery</Link>
-        <Link to="/recipes">Recipes</Link>
+      {/* Left side (Toggle button + Logo) */}
+      <div className="flex items-center gap-4">
 
-        {user ? (
-          <button onClick={logout} className="text-vp-accent font-semibold">
-            Logout
-          </button>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
+        {/* Mobile Toggle Button */}
+        <button
+          className="md:hidden text-slate-300 hover:text-white"
+          onClick={onToggleSidebar}
+        >
+          <Menu size={24} />
+        </button>
+
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-colorful-gradient">
+          <ChefHat className="text-vp-secondary h-7 w-7" />
+          <span>VitalPlate</span>
+        </Link>
+
       </div>
+
+      {/* (Right side of navbar if you ever add controls) */}
+      <div></div>
     </nav>
   );
 };

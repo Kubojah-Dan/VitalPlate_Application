@@ -4,7 +4,6 @@ import axios from 'axios';
 const router = express.Router();
 const MEALDB_URL = 'https://www.themealdb.com/api/json/v1/1';
 
-// GET /api/recipes/search?q=
 router.get('/search', async (req, res) => {
   try {
     const q = req.query.q || '';

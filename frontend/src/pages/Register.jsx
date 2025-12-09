@@ -31,7 +31,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center px-6 relative">
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1516685018646-549df054f7ca?w=2000"
+          src="https://freefoodphotos.com/imagelibrary/seafood/thumbs/salad_tuna.jpg"
           alt="Healthy"
           className="w-full h-full object-cover"
         />

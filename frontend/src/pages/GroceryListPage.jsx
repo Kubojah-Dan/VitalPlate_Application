@@ -3,33 +3,53 @@ import Sidebar from "../components/Sidebar.jsx";
 import Navbar from "../components/Navbar.jsx";
 import GroceryList from "../components/GroceryList.jsx";
 import { apiFetch } from "../apiClient.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const GroceryListPage = () => {
+  const { user, token } = useAuth();
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const loadPlan = async () => {
-    try {
-      const data = await apiFetch("/plan");
-      setPlan(data.plan);
-    } catch (err) {
-      console.error("Grocery load failed:", err);
-    }
-    setLoading(false);
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    loadPlan();
-  }, []);
+    if (!user || !token) return;
+    const load = async () => {
+      try {
+        const data = await apiFetch("/plan", { token });
+        const weeklyPlan =
+          data?.plan || data?.weeklyPlan || data || null;
+        setPlan(weeklyPlan);
+      } catch (e) {
+        console.error("Grocery load failed:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [user, token]);
 
-  if (loading)
-    return <div className="text-center p-20 text-xl text-vp-secondary">Loading Grocery List...</div>;
+  if (!user) return null;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-xl text-vp-secondary">
+        Loading grocery list...
+      </div>
+    );
+  }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1">
-        <Navbar />
+    <div className="flex min-h-screen bg-slate-950 text-slate-50">
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <main className="flex-1 flex flex-col">
+        <Navbar
+          onToggleSidebar={() =>
+            setSidebarOpen((v) => !v)
+          }
+        />
         <GroceryList plan={plan} />
       </main>
     </div>
@@ -37,3 +57,4 @@ const GroceryListPage = () => {
 };
 
 export default GroceryListPage;
+

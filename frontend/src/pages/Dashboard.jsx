@@ -6,42 +6,62 @@ import { apiFetch } from "../apiClient.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [plan, setPlan] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const loadDashboard = async () => {
-    try {
-      const planData = await apiFetch("/plan");
-      const userData = await apiFetch("/auth/me");
-
-      setPlan(planData.plan);
-      setProfile(userData.profile);
-    } catch (error) {
-      console.error("Dashboard load failed:", error);
-    }
-    setLoading(false);
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
+    if (!user || !token) return;
+
+    const loadDashboard = async () => {
+      try {
+        const data = await apiFetch("/plan", { token });
+
+        // support responses like { plan, profile } or just plan
+        const weeklyPlan =
+          data?.plan || data?.weeklyPlan || data || null;
+        const profileFromApi =
+          data?.profile || user.profile || {
+            name: user.email?.split("@")[0] || "Friend",
+            goal: "Maintain Health",
+          };
+
+        setPlan(weeklyPlan);
+        setProfile(profileFromApi);
+      } catch (err) {
+        console.error("Dashboard load failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadDashboard();
-  }, []);
+  }, [user, token]);
 
   if (!user) return null;
-  if (loading)
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen text-xl text-vp-secondary">
         Loading your dashboard...
       </div>
     );
+  }
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-
-      <main className="flex-1">
-        <Navbar />
+    <div className="flex min-h-screen bg-slate-950 text-slate-50">
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+      <main className="flex-1 flex flex-col">
+        <Navbar
+          onToggleSidebar={() =>
+            setSidebarOpen((v) => !v)
+          }
+        />
         <DashboardComponent plan={plan} profile={profile} />
       </main>
     </div>
@@ -49,3 +69,6 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+
