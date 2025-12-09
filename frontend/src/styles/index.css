@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-vp-background text-vp-text-light min-h-screen antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold text-vp-text-light;
+}
+
+.text-colorful-gradient {
+  background-image: linear-gradient(
+    to right,
+    theme('colors.vp-primary'),
+    theme('colors.vp-secondary')
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+#root {
+  @apply min-h-screen;
+}
