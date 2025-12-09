@@ -1,12 +1,14 @@
 import express from 'express';
 import Plan from '../models/Plan.js';
 import { auth } from '../middleware/auth.js';
+import { generatePlan } from "../controllers/planController.js";
 import { generateWeeklyPlanFromGemini } from '../services/geminiService.js';
 import { enrichRecipeMacrosWithNinjas } from '../services/ninjasService.js';
 import { attachMealDBImage } from '../services/mealdbService.js';
 
 const router = express.Router();
 
+router.post("/generate", generatePlan);
 // Helper: normalize Gemini output into Plan.days format
 const normalizeWeeklyPlan = (weeklyArray) => {
   // weeklyArray: [{ day: 'Monday', meals: [recipe1, recipe2,...] }]
