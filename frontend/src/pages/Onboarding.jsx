@@ -245,8 +245,9 @@ const Onboarding = () => {
                 {step > 1 ? (
                   <button
                     onClick={prevStep}
-                    className="px-6 py-2 text-slate-400 font-medium hover:text-white transition"
+                    className="flex items-center gap-1 px-4 py-2 text-emerald-400 font-medium hover:text-white transition duration-200"
                   >
+                    <ChevronRight size={18} className="transform rotate-180" />
                     Back
                   </button>
                 ) : (
@@ -256,16 +257,17 @@ const Onboarding = () => {
                 {step < 3 ? (
                   <button
                     onClick={nextStep}
-                    className="flex items-center gap-2 bg-slate-100 text-slate-900 px-8 py-3 rounded-xl font-medium hover:bg-white transition shadow-lg shadow-slate-900/50"
+                    className="flex items-center gap-2 bg-emerald-600 text-gray-900 px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition shadow-lg shadow-emerald-900/50 uppercase tracking-wider transform hover:scale-[1.02]"
                   >
                     Next Step <ChevronRight size={18} />
                   </button>
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    className="flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-emerald-500 transition shadow-lg shadow-emerald-900/20"
+                    className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-gray-900 px-8 py-3 rounded-xl font-bold hover:from-emerald-400 hover:to-teal-400 transition shadow-xl shadow-emerald-700/50 uppercase tracking-wider transform hover:scale-[1.02]"
+                    disabled={isLoading}
                   >
-                    Generate Plan <Activity size={18} />
+                    {isLoading ? 'Processing...' : 'Generate Plan'} <Activity size={18} />
                   </button>
                 )}
               </div>
@@ -278,4 +280,3 @@ const Onboarding = () => {
 };
 
 export default Onboarding;
-
