@@ -5,13 +5,11 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-// Generate JWT
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET || "vital_secret", {
     expiresIn: "7d",
   });
 
-// Register
 router.post("/register", async (req, res) => {
   try {
     const { email, password, profile } = req.body;
@@ -43,7 +41,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;

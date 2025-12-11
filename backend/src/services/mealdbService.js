@@ -21,7 +21,6 @@ export const attachMealDBImage = async (recipe) => {
       source: recipe.source || 'mealdb'
     };
   }
-  // fallback – seeded image
   return {
     ...recipe,
     image: recipe.image || `https://picsum.photos/seed/${encodeURIComponent(recipe.id || recipe.name)}/400/400`,

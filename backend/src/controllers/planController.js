@@ -23,12 +23,37 @@ async function fetchRecipeImage(query) {
       }
     );
 
-    if (res.data.length > 0 && res.data[0].image) {
+    if (Array.isArray(res.data) && res.data.length > 0 && res.data[0].image) {
       return res.data[0].image;
     }
 
     return null;
-  } catch {
+  } catch (err) {
+    console.log("Ninjas API error:", err.message);
+    return null;
+  }
+}
+
+async function fetchGoogleImage(query) {
+  try {
+    const API_KEY = process.env.GOOGLE_CSE_KEY;
+    const CX = process.env.GOOGLE_CSE_ENGINE_ID;
+
+    if (!API_KEY || !CX) {
+      console.log("Google CSE key/engine missing.");
+      return null;
+    }
+
+    const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(
+      query + " food"
+    )}&cx=${CX}&key=${API_KEY}&searchType=image&num=1`;
+
+    const res = await axios.get(url);
+
+    const img = res.data?.items?.[0]?.link;
+    return img || null;
+  } catch (err) {
+    console.log("Google CSE image error:", err.message);
     return null;
   }
 }
@@ -42,6 +67,7 @@ function buildGroceryAndSummary(weeklyPlanObj) {
 
   Object.values(weeklyPlanObj).forEach((dayPlan) => {
     if (!dayPlan?.meals) return;
+
     Object.values(dayPlan.meals).forEach((meal) => {
       if (!meal) return;
 
@@ -88,6 +114,7 @@ export const generatePlan = async (req, res) => {
     const profile = req.body;
 
     console.log("Generating AI plan for user:", userId.toString());
+
     const prompt = `
 You are a clinical nutritionist creating a 7-day medically tailored meal plan.
 
@@ -113,21 +140,13 @@ Return ONLY valid JSON with this exact structure:
           "description": "Short tasty description",
           "mealType": "Breakfast",
           "prepTime": 15,
-          "healthBenefit": "Explain why this is good for their conditions",
+          "healthBenefit": "Explain why this is good",
           "ingredients": [
             { "name": "Oats", "amount": "1/2 cup", "category": "Grains" }
           ],
-          "instructions": [
-            "Step 1 in simple language",
-            "Step 2"
-          ],
-          "macros": {
-            "calories": 350,
-            "protein": 15,
-            "carbs": 50,
-            "fats": 8
-          },
-          "image": "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
+          "instructions": ["Step 1", "Step 2"],
+          "macros": { "calories": 350, "protein": 15, "carbs": 50, "fats": 8 },
+          "image": "https://example.com/img.jpg"
         },
         "Lunch": { ... },
         "Dinner": { ... },
@@ -136,12 +155,6 @@ Return ONLY valid JSON with this exact structure:
     }
   ]
 }
-
-Rules:
-- Use real ingredients.
-- Always include Breakfast, Lunch, Dinner & Snack.
-- Respect conditions & restrictions.
-- Ensure all macros exist.
 `;
 
     const completion = await openai.chat.completions.create({
@@ -163,73 +176,59 @@ Rules:
     try {
       raw = JSON.parse(content);
     } catch (err) {
-      console.error("❌ Failed to parse AI JSON:", err.message);
-      console.error("AI Output:", content);
-      return res
-        .status(500)
-        .json({ message: "AI returned invalid JSON." });
+      console.error("❌ JSON Parse Failed:", err.message);
+      return res.status(500).json({ message: "AI returned invalid JSON." });
     }
+
     const weekArray = raw.week || [];
     const weeklyPlan = {};
 
     for (const dayName of DAY_NAMES) {
       const fromAI =
         weekArray.find(
-          (d) =>
-            d.day?.toLowerCase().trim() === dayName.toLowerCase().trim()
+          (d) => d.day?.toLowerCase().trim() === dayName.toLowerCase().trim()
         ) || {};
 
       const aiMeals = fromAI.meals || {};
       const mealsObj = {};
 
       for (const mealType of MEAL_TYPES) {
-        const m = aiMeals[mealType] || null;
-
-        if (m) {
-          const image =
-            (await fetchRecipeImage(m.name)) ||
-            m.image ||
-            `https://picsum.photos/seed/${encodeURIComponent(
-              m.name
-            )}/500/400`;
-
-          mealsObj[mealType] = {
-            id: m.id || `${dayName}-${mealType}`,
-            name: m.name || `${mealType} Meal`,
-            description: m.description || "",
-            mealType,
-            prepTime: m.prepTime || 20,
-            healthBenefit: m.healthBenefit || "",
-            ingredients: m.ingredients || [],
-            instructions: m.instructions || [],
-            macros: {
-              calories: m.macros?.calories || 0,
-              protein: m.macros?.protein || 0,
-              carbs: m.macros?.carbs || 0,
-              fats: m.macros?.fats || 0,
-            },
-            image,
-          };
-        } else {
+        const m = aiMeals[mealType];
+        if (!m) {
           mealsObj[mealType] = null;
+          continue;
         }
+
+        const image =
+          (await fetchRecipeImage(m.name)) ||
+          (await fetchGoogleImage(m.name)) || 
+          m.image ||
+          `https://picsum.photos/seed/${encodeURIComponent(m.name)}/500/400`;
+
+        mealsObj[mealType] = {
+          id: m.id || `${dayName}-${mealType}`,
+          name: m.name || `${mealType} Meal`,
+          description: m.description || "",
+          mealType,
+          prepTime: m.prepTime || 20,
+          healthBenefit: m.healthBenefit || "",
+          ingredients: m.ingredients || [],
+          instructions: m.instructions || [],
+          macros: {
+            calories: m.macros?.calories || 0,
+            protein: m.macros?.protein || 0,
+            carbs: m.macros?.carbs || 0,
+            fats: m.macros?.fats || 0,
+          },
+          image,
+        };
       }
 
-      weeklyPlan[dayName] = {
-        day: dayName,
-        meals: mealsObj,
-      };
+      weeklyPlan[dayName] = { day: dayName, meals: mealsObj };
     }
-
-    /* -----------------------------
-       Grocery List & Summary
-    ----------------------------- */
     const { groceryList, nutritionSummary } =
       buildGroceryAndSummary(weeklyPlan);
 
-    /* -----------------------------
-       Save to DB
-    ----------------------------- */
     const doc = await Plan.findOneAndUpdate(
       { user: userId },
       {
@@ -260,9 +259,6 @@ Rules:
   }
 };
 
-/* ---------------------------------------
-   🔥 GET Current Plan
----------------------------------------- */
 export const getCurrentPlan = async (req, res) => {
   try {
     const doc = await Plan.findOne({ user: req.user._id });

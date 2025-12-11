@@ -57,11 +57,11 @@ const Onboarding = () => {
 
     const result = await apiFetch("/plan/generate", {
       method: "POST",
-      token, // ⬅ IMPORTANT
+      token, 
       body: profile,
     });
 
-    login(token, { ...user, profile }); // Update locally
+    login(token, { ...user, profile });
     navigate("/dashboard");
 
   } catch (err) {
@@ -77,7 +77,6 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
-      {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop"
@@ -88,7 +87,6 @@ const Onboarding = () => {
       </div>
 
       <div className="relative z-10 bg-slate-900/95 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
-        {/* Progress Bar */}
         <div className="bg-slate-800 h-2 w-full">
           <div
             className="bg-emerald-500 h-full transition-all duration-300"

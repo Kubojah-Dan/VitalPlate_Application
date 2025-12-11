@@ -25,8 +25,6 @@ const Planner = () => {
       setLoading(false);
     }
   };
-
-  // ----------- Save Plan -------------
   const savePlan = async (newPlan) => {
     setPlan(newPlan);
     try {
@@ -40,7 +38,6 @@ const Planner = () => {
     }
   };
 
-  // ----------- Recipe Modal ----------
   const openModal = (recipe) => setModalRecipe(recipe);
   const closeModal = () => setModalRecipe(null);
 
@@ -48,7 +45,6 @@ const Planner = () => {
     if (user && token) loadPlan();
   }, [user, token]);
 
-  // ----------- Add imported recipe (from recipes page) ----------
   useEffect(() => {
     const stored = localStorage.getItem("addMealRecipe");
     if (stored) {
@@ -58,7 +54,6 @@ const Planner = () => {
         setPlan((prev) => {
           const newPlan = structuredClone(prev);
 
-          // Find first empty slot
           const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
           for (const [day, dayPlan] of Object.entries(newPlan)) {
             for (const type of mealTypes) {

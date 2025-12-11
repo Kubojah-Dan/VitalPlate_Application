@@ -57,8 +57,6 @@ const PlanSchema = new mongoose.Schema(
       required: true,
     },
     profileSnapshot: { type: Object },
-
-    // Option 2: weekly plan + grocery + summary
     weeklyPlan: {
       type: Map,
       of: DayPlanSchema,

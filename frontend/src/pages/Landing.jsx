@@ -1,14 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Restoring the Link import
-// Importing icons for the futuristic look and the chef logo
+import { Link } from 'react-router-dom'; 
 import { Utensils, ChefHat, HeartPulse, ListChecks, Zap } from 'lucide-react';
 
-// Helper component for the dashboard preview meal blocks
 const MealBlock = ({ time, name, info, icon }) => (
-    // Changed hover border from cyan to emerald
     <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-800 hover:border-emerald-600 transition duration-300 hover:bg-gray-800/50 shadow-md">
         <p className="text-xs text-gray-500 mb-1 tracking-wider">{time}</p>
-        {/* Simplified icon rendering slightly for robustness */}
         <p className="font-semibold text-white flex items-center">
             {icon && <span className="mr-2 flex items-center">{icon}</span>}
             {name}
@@ -18,10 +14,8 @@ const MealBlock = ({ time, name, info, icon }) => (
 );
 
 const Landing = () => {
-    // Futuristic color palette: Deep space gray/black with electric emerald accents.
     return (
         <div className="min-h-screen relative flex items-center justify-center overflow-hidden font-inter text-white">
-            {/* Custom Styles for Neon Glow and Grid Background (Now Emerald) */}
             <style>
                 {`
                 /* Neon Glow is now Emerald */
@@ -44,12 +38,9 @@ const Landing = () => {
                 `}
             </style>
 
-            {/* Background: Deep Space Black with Subtle Grid and Blur */}
             <div className="absolute inset-0 bg-gray-950">
                 <div className="absolute inset-0 bg-grid opacity-30" />
             </div>
-
-            {/* Background Image Overlay (Kept the original image, heavily dimmed) */}
             <div className="absolute inset-0">
                 <img
                     src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2000&auto=format&fit=crop"
@@ -59,11 +50,8 @@ const Landing = () => {
                 <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" />
             </div>
 
-            {/* Content Container */}
             <div className="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 py-16 grid md:grid-cols-2 gap-12 items-center animate-fade-in-up">
-                {/* Left Section: Hero Text & CTAs */}
                 <div>
-                    {/* Logo: Chef Hat icon + VitalPlate (Now Emerald Accents) */}
                     <div className="flex items-center gap-3 mb-8">
                         <div className="w-12 h-12 rounded-full bg-emerald-500/10 border-2 border-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                             <ChefHat className="w-6 h-6 text-emerald-400" />
@@ -76,7 +64,6 @@ const Landing = () => {
 
                     <h2 className="text-5xl lg:text-7xl leading-tight font-extrabold mb-6">
                         <span className="text-white block">Nutrition powered by</span>
-                        {/* Gradient changed to Emerald/Teal */}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500 neon-glow-text">
                             AI Intelligence.
                         </span>
@@ -86,7 +73,6 @@ const Landing = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
-                        {/* Primary CTA Button (Now Emerald) */}
                         <Link
                             to="/register"
                             className="flex items-center justify-center px-8 py-4 rounded-xl bg-emerald-500 text-gray-900 font-bold text-lg shadow-xl shadow-emerald-500/40 hover:bg-emerald-400 transition transform hover:scale-[1.02] duration-300 uppercase tracking-widest"
@@ -94,7 +80,6 @@ const Landing = () => {
                             <Zap className="w-5 h-5 mr-2" />
                             Get Started
                         </Link>
-                        {/* Secondary CTA Button (Now Emerald) */}
                         <Link
                             to="/login"
                             className="flex items-center justify-center px-8 py-4 rounded-xl border-2 border-gray-600 text-emerald-300 font-semibold hover:border-emerald-400 hover:text-emerald-400 transition duration-300 uppercase tracking-wider"
@@ -111,19 +96,16 @@ const Landing = () => {
                     </div>
                 </div>
 
-                {/* Right Section: Futuristic Dashboard Preview Card (Frosted Glass Effect - Now Emerald) */}
                 <div className="bg-white/5 border border-emerald-800/50 rounded-3xl p-8 shadow-2xl shadow-black/80 backdrop-blur-xl transition">
                     <p className="text-lg font-semibold text-emerald-400 mb-6 flex items-center"><Zap className="w-5 h-5 mr-2" /> DATA FEED: ACTIVE PROTOCOL</p>
 
                     <div className="space-y-6">
-                        {/* Calorie/Macro Progress Bar (Now Emerald) */}
                         <div className="p-4 bg-gray-900/50 rounded-xl border border-gray-700">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm text-gray-400 tracking-widest">TARGETED ENERGY INTAKE (CAL)</span>
                                 <span className="text-2xl font-extrabold text-emerald-400">1,320<span className="text-gray-500"> / 2,000</span></span>
                             </div>
                             <div className="w-full h-3 rounded-full bg-gray-800 overflow-hidden shadow-inner shadow-black/50">
-                                {/* Progress bar gradient changed to Emerald/Teal */}
                                 <div className="h-full w-[66%] bg-gradient-to-r from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20" />
                             </div>
                             <div className="text-xs text-gray-500 mt-2 flex justify-between tracking-wide">
@@ -132,7 +114,6 @@ const Landing = () => {
                             </div>
                         </div>
 
-                        {/* Meal Blocks */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                             <MealBlock
                                 time="08:00 HRS"

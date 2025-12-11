@@ -19,7 +19,6 @@ const Dashboard = () => {
       try {
         const data = await apiFetch("/plan", { token });
 
-        // support responses like { plan, profile } or just plan
         const weeklyPlan =
           data?.plan || data?.weeklyPlan || data || null;
         const profileFromApi =
@@ -69,4 +68,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
