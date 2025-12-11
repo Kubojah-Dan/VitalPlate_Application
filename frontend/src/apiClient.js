@@ -1,3 +1,5 @@
+const API = import.meta.env.VITE_API_BASE_URL;
+
 export async function apiFetch(url, options = {}) {
   const { method = "GET", body, token } = options;
 
@@ -5,7 +7,11 @@ export async function apiFetch(url, options = {}) {
   if (body) headers["Content-Type"] = "application/json";
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`/api${url}`, {
+  const fullUrl = API
+    ? `${API}${url}`       
+    : `/api${url}`;         
+
+  const res = await fetch(fullUrl, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
