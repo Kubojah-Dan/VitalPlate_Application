@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await apiFetch("/auth/login", {
+      const res = await apiFetch("/api/auth/login", {
         method: "POST",
         body: { email, password }
       });

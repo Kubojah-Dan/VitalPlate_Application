@@ -14,7 +14,7 @@ const Register = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await apiFetch("/auth/register", {
+      const res = await apiFetch("/api/auth/register", {
         method: "POST",
         body: { email, password, profile: {} }
       });
