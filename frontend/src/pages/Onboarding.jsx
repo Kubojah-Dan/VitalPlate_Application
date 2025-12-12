@@ -55,7 +55,7 @@ const Onboarding = () => {
       weight: parseInt(formData.weight),
     };
 
-    const result = await apiFetch("/plan/generate", {
+    const result = await apiFetch("/api/plan/generate", {
       method: "POST",
       token, 
       body: profile,

@@ -17,7 +17,7 @@ const Dashboard = () => {
 
     const loadDashboard = async () => {
       try {
-        const data = await apiFetch("/plan", { token });
+        const data = await apiFetch("/api/plan", { token });
 
         const weeklyPlan =
           data?.plan || data?.weeklyPlan || data || null;

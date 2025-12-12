@@ -15,7 +15,7 @@ const Planner = () => {
 
   const loadPlan = async () => {
     try {
-      const res = await apiFetch("/plan", { token });
+      const res = await apiFetch("/api/plan", { token });
 
       const weeklyPlan = res?.plan || res?.weeklyPlan || res || null;
       setPlan(weeklyPlan);
@@ -28,7 +28,7 @@ const Planner = () => {
   const savePlan = async (newPlan) => {
     setPlan(newPlan);
     try {
-      await apiFetch("/plan", {
+      await apiFetch("/api/plan", {
         method: "PUT",
         token,
         body: { plan: newPlan }
