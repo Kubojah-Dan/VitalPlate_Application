@@ -7,6 +7,7 @@ import planRoutes from "./routes/planRoutes.js";
 import recipeRoutes from "./routes/recipeRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import testRoutes from "./routes/testRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
@@ -43,6 +44,7 @@ app.use("/api/plan", planRoutes);
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/test", testRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 export default app;

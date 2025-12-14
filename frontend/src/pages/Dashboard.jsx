@@ -19,8 +19,7 @@ const Dashboard = () => {
       try {
         const data = await apiFetch("/api/plan", { token });
 
-        const weeklyPlan =
-          data?.plan || data?.weeklyPlan || data || null;
+        const weeklyPlan = data?.plan ?? null;
         const profileFromApi =
           data?.profile || user.profile || {
             name: user.email?.split("@")[0] || "Friend",

@@ -247,12 +247,11 @@ Return ONLY valid JSON with this exact structure:
     console.log("✅ Plan saved for user:", userId.toString());
 
     return res.json({
-      message: "Plan generated",
-      plan: doc.weeklyPlan,
+      plan: Object.fromEntries(doc.weeklyPlan),
       groceryList: doc.groceryList,
       summary: doc.nutritionSummary,
       profile: doc.profileSnapshot,
-    });
+   });
   } catch (err) {
     console.error("Plan generation error:", err);
     return res.status(500).json({
