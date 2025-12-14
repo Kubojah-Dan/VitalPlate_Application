@@ -85,7 +85,6 @@ const DashboardComponent = ({ plan, profile }) => {
   return (
     <div className="p-6 md:p-10 space-y-8 max-w-7xl mx-auto">
       
-      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-4xl font-extrabold text-white tracking-tight">
@@ -117,11 +116,8 @@ const DashboardComponent = ({ plan, profile }) => {
           </div>
         </div>
       </div>
-
-      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Today’s Meals */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-2">
             <Calendar size={20} className="text-emerald-500" />
@@ -178,7 +174,6 @@ const DashboardComponent = ({ plan, profile }) => {
           </div>
         </div>
 
-        {/* Weekly Chart */}
         <div className="bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 flex flex-col">
           <h3 className="text-lg font-bold text-slate-200 mb-6">
             Weekly Calorie Intake
