@@ -106,10 +106,13 @@ function buildGroceryAndSummary(weeklyPlanObj) {
 
 export const generatePlan = async (req, res) => {
   try {
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ message: "OPENAI_API_KEY missing" });
+    }
+
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-
     const userId = req.user._id;
     const profile = req.body;
 

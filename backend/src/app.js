@@ -5,6 +5,9 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
 import recipeRoutes from "./routes/recipeRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 
@@ -38,5 +41,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/recipes", recipeRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 export default app;

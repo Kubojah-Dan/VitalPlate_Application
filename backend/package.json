@@ -18,6 +18,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.21.0",
     "mongoose": "^8.20.2",
-    "openai": "^6.10.0"
+    "node-cron": "^4.2.1",
+    "openai": "^6.10.0",
+    "react-markdown": "^10.1.0",
+    "twilio": "^5.10.7",
+    "web-push": "^3.6.7"
   }
 }
