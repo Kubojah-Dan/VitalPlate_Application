@@ -175,33 +175,51 @@ const Landing = () => {
         </div>
       </div>
 
-      <section className="bg-gray-950 py-24 px-6">
-        <h3 className="text-4xl font-extrabold text-center mb-4">
-          AI-Curated Recipe Showcase
-        </h3>
-        <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
-          A glimpse of what your personalized weekly protocol looks like.
-        </p>
+      <section className="relative py-24 px-6 overflow-hidden">
+  
+  {/* Background layers (same as hero) */}
+  <div className="absolute inset-0 bg-gray-950">
+    <div className="absolute inset-0 bg-grid opacity-20" />
+  </div>
 
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-          {RECIPE_SHOWCASE.map((r) => (
-            <div
-              key={r.name}
-              className="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500 transition shadow-xl"
-            >
-              <img
-                src={r.image}
-                alt={r.name}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-6">
-                <h4 className="text-xl font-bold mb-2">{r.name}</h4>
-                <p className="text-gray-400 text-sm">{r.description}</p>
-              </div>
-            </div>
-          ))}
+  <div className="absolute inset-0">
+    <img
+      src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2000&auto=format&fit=crop"
+      alt="Healthy food background"
+      className="w-full h-full object-cover opacity-10"
+    />
+    <div className="absolute inset-0 bg-gray-900/70 backdrop-blur-sm" />
+  </div>
+
+  {/* Content */}
+  <div className="relative z-10">
+    <h3 className="text-4xl font-extrabold text-center mb-4">
+      AI-Curated Recipe Showcase
+    </h3>
+    <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+      A glimpse of what your personalized weekly protocol looks like.
+    </p>
+
+    <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+      {RECIPE_SHOWCASE.map((r) => (
+        <div
+          key={r.name}
+          className="bg-slate-900/80 rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500 transition shadow-xl backdrop-blur-md"
+        >
+          <img
+            src={r.image}
+            alt={r.name}
+            className="w-full h-56 object-cover"
+          />
+          <div className="p-6">
+            <h4 className="text-xl font-bold mb-2">{r.name}</h4>
+            <p className="text-gray-400 text-sm">{r.description}</p>
+          </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       <section className="bg-slate-950 py-24 px-6">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-center">

@@ -8,6 +8,9 @@ import DashboardPage from './pages/Dashboard.jsx';
 import Planner from './pages/Planner.jsx';
 import GroceryListPage from './pages/GroceryListPage.jsx';
 import RecipeLibrary from './pages/RecipeLibrary.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
+import NotificationsPage from './pages/NotificationsPage.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
 const PrivateRoute = ({ children }) => {
@@ -62,7 +65,11 @@ const App = () => {
           </PrivateRoute>
         }
       />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/notifications" element={<NotificationsPage />} />
     </Routes>
+    
   );
 };
 

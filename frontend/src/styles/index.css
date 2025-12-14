@@ -35,3 +35,11 @@ h6 {
 .bg-vp-card {
   @apply bg-slate-900/80;
 }
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border-radius: 4px;
+}

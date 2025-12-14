@@ -1,36 +1,29 @@
-const API = import.meta.env.VITE_API_BASE_URL;
+export async function apiFetch(
+  url,
+  { method = "GET", token, body } = {}
+) {
+  const headers = {
+    "Content-Type": "application/json",
+  };
 
-export async function apiFetch(url, options = {}) {
-  const { method = "GET", body, token } = options;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
 
-  const headers = {};
-  if (body) headers["Content-Type"] = "application/json";
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
-  const fullUrl = API
-    ? `${API}${url}`       
-    : `/api${url}`;         
-
-  const res = await fetch(fullUrl, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  const text = await res.text();
+  const res = await fetch(
+    import.meta.env.VITE_API_URL + url,
+    {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined,
+    }
+  );
 
   if (!res.ok) {
+    const text = await res.text();
     throw new Error(`Request failed: ${res.status} - ${text}`);
   }
 
-  if (!text) return null;
-
-  try {
-    return JSON.parse(text);
-  } catch (err) {
-    console.error("Failed to parse JSON from", url, "→", text);
-    throw err;
-  }
+  return res.json();
 }
-
 

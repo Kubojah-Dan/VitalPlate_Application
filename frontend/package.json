@@ -12,8 +12,10 @@
     "lucide-react": "^0.367.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.27.0",
-    "recharts": "^3.5.1"
+    "recharts": "^3.5.1",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.1.0",

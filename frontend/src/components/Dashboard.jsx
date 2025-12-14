@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Calendar, Droplets, Target, Flame } from "lucide-react";
+import MealChatbot from "../components/MealChatbot";
 import RecipeModal from "./RecipeModal.jsx";
 
 const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snack"];
@@ -221,6 +222,7 @@ const DashboardComponent = ({ plan, profile }) => {
           onClose={() => setModalRecipe(null)}
         />
       )}
+      {plan && <MealChatbot plan={plan} />}
     </div>
   );
 };
