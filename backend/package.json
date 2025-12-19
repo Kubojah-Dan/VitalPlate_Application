@@ -20,6 +20,9 @@
     "mongoose": "^8.20.2",
     "node-cron": "^4.2.1",
     "openai": "^6.10.0",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
     "react-markdown": "^10.1.0",
     "twilio": "^5.10.7",
     "web-push": "^3.6.7"

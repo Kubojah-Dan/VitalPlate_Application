@@ -21,7 +21,7 @@ const RecipeLibrary = () => {
 
     const load = async () => {
       try {
-        const data = await apiFetch("/api/plan", { token });
+        const data = await apiFetch("/plan", { token });
         const weeklyPlan =
           data?.plan || data?.weeklyPlan || data || null;
         setPlan(weeklyPlan);

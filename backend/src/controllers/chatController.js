@@ -1,6 +1,23 @@
 import OpenAI from "openai";
 import Chat from "../models/Chat.js";
 
+function summarizePlan(plan) {
+  const summary = {};
+
+  for (const [day, data] of Object.entries(plan || {})) {
+    summary[day] = {};
+
+    for (const [mealType, meal] of Object.entries(data.meals || {})) {
+      if (!meal) continue;
+
+      summary[day][mealType] = meal.name;
+    }
+  }
+
+  return summary;
+}
+
+
 export const mealChat = async (req, res) => {
   try {
     const { question, plan } = req.body;
@@ -10,61 +27,64 @@ export const mealChat = async (req, res) => {
       return res.status(400).json({ message: "Question and plan required" });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ message: "OPENAI_API_KEY missing" });
-    }
-
-    const openai = new OpenAI({
+    const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
+      baseURL: process.env.OPENAI_BASE_URL, 
     });
-    const systemPrompt = `
+    const compactPlan = summarizePlan(plan);
+
+    const completion = await client.chat.completions.create({
+      model: "openai/gpt-oss-120b",
+      max_tokens: 800,
+      temperature: 0.3,
+      messages: [
+        {
+          role: "system",
+          content: `
 You are a professional nutrition assistant.
 
 RULES:
-- Always respond in CLEAN, WELL-FORMATTED MARKDOWN
-- Use headings (##), bullet points (-), and tables when useful
-- Be concise but helpful
-- Use emojis sparingly for clarity 🍽️🥗
-- Never return raw paragraphs
-`;
+- Use ONLY meals from the provided plan
+- Respond in clean Markdown
+- Use bullet points and short sections
+- Be concise and practical
+- If asked about a specific day, answer ONLY for that day
+          `.trim(),
+        },
+        {
+          role: "user",
+          content: `
+Meal Plan Summary (names only):
+${JSON.stringify(compactPlan, null, 2)}
 
-    const userPrompt = `
-### User Meal Plan
-${JSON.stringify(plan, null, 2)}
-
-### User Question
+Question:
 ${question}
-`;
-
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
+          `.trim(),
+        },
       ],
     });
 
     const answer = completion.choices[0].message.content;
 
     await Chat.findOneAndUpdate(
-  { user: userId },
-  {
-    $push: {
-      messages: {
-        $each: [
-          { role: "user", content: question },
-          { role: "assistant", content: answer },
-        ],
+      { user: userId },
+      {
+        $push: {
+          messages: {
+            $each: [
+              { role: "user", content: question },
+              { role: "assistant", content: answer },
+            ],
+            $slice: -20, 
+          },
+        },
       },
-    },
-  },
-  { upsert: true, new: true }
-);
+      { upsert: true }
+    );
 
     res.json({ answer });
   } catch (err) {
-    console.error("Chat error:", err.message);
+    console.error("❌ Chat error:", err.message);
     res.status(500).json({ message: "Chat failed" });
   }
 };

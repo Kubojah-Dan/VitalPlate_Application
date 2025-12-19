@@ -84,6 +84,14 @@ const DashboardComponent = ({ plan, profile }) => {
 
   return (
     <div className="p-6 md:p-10 space-y-8 max-w-7xl mx-auto">
+
+      <div 
+        className="absolute inset-0 z-0 opacity-20 bg-cover bg-center bg-no-repeat bg-fixed scale-110"
+        style={{ 
+          backgroundImage: `url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop')`,
+          filter: 'blur(3px)'
+        }}
+      />
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -223,4 +231,3 @@ const DashboardComponent = ({ plan, profile }) => {
 };
 
 export default DashboardComponent;
-

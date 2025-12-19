@@ -10,6 +10,7 @@ const HEALTH_CONDITIONS = [
   'High Cholesterol',
   'IBS',
   'Kidney Disease',
+  'Ulcers',
   'None'
 ];
 
@@ -55,7 +56,7 @@ const Onboarding = () => {
       weight: parseInt(formData.weight),
     };
 
-    const result = await apiFetch("/api/plan/generate", {
+    const result = await apiFetch("/plan/generate", {
       method: "POST",
       token, 
       body: profile,

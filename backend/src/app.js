@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import passport from "passport";
 import authRoutes from "./routes/authRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
 import recipeRoutes from "./routes/recipeRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
   res.json({ status: "🟢 VitalPlate backend running" });
 });
 
+app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/plan", planRoutes);
 app.use("/api/recipes", recipeRoutes);

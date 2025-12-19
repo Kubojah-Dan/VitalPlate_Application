@@ -1,5 +1,6 @@
 import express from "express";
 import bcrypt from "bcryptjs";
+import passport from "passport";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
@@ -66,5 +67,42 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.get("/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    const token = jwt.sign(
+      { id: req.user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+  }
+);
+
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/github/callback",
+  passport.authenticate("github", { session: false }),
+  (req, res) => {
+    const token = jwt.sign(
+      { id: req.user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+  }
+);
+
 
 export default router;

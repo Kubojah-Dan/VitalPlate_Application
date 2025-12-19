@@ -10,14 +10,14 @@ const ProfilePage = () => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    apiFetch("/api/user/profile", { token }).then(setProfile);
+    apiFetch("/user/profile", { token }).then(setProfile);
   }, [token]);
 
   const update = (key, value) =>
     setProfile((p) => ({ ...p, [key]: value }));
 
   const save = async () => {
-    await apiFetch("/api/user/profile", {
+    await apiFetch("/user/profile", {
       method: "PUT",
       token,
       body: profile,
