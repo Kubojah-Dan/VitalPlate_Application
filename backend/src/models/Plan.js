@@ -53,9 +53,11 @@ const PlanSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      unique: true,
       required: true,
+      index: true,
     },
+    name: { type: String, default: "My Plan" },
+    isCurrent: { type: Boolean, default: false },
     profileSnapshot: { type: Object },
     weeklyPlan: {
       type: Map,

@@ -32,6 +32,10 @@ const profileSchema = new mongoose.Schema(
 const settingsSchema = new mongoose.Schema(
   {
     notificationsEnabled: { type: Boolean, default: true },
+    smsNotificationsEnabled: { type: Boolean, default: false },
+    phoneVerified: { type: Boolean, default: false },
+    timezone: { type: String, default: "UTC" },
+    notificationTimes: { type: [String], default: ["12:00"] },
     units: { type: String, default: "Metric" },
     weekStart: { type: String, default: "Monday" },
     groceryIntegration: { type: Boolean, default: true },

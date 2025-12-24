@@ -185,16 +185,24 @@ ${JSON.stringify(profile)}
     const { groceryList, nutritionSummary } =
       buildGroceryAndSummary(weeklyPlan);
 
-    const doc = await Plan.findOneAndUpdate(
-      { user: userId },
-      { user: userId, profileSnapshot: profile, weeklyPlan, groceryList, nutritionSummary },
-      { upsert: true, new: true }
-    );
+    // mark existing plans as not current
+    await Plan.updateMany({ user: userId, isCurrent: true }, { isCurrent: false });
 
-    console.log("✅ Plan saved");
+    const doc = await Plan.create({
+      user: userId,
+      name: profile.name ? `${profile.name}'s Plan` : undefined,
+      isCurrent: true,
+      profileSnapshot: profile,
+      weeklyPlan,
+      groceryList,
+      nutritionSummary,
+    });
+
+    console.log("✅ Plan created and set as current");
 
     res.json({
-      plan: Object.fromEntries(doc.weeklyPlan),
+      id: doc._id,
+      plan: weeklyPlan,
       groceryList,
       summary: nutritionSummary,
       profile,
@@ -206,7 +214,12 @@ ${JSON.stringify(profile)}
 };
 
 export const getCurrentPlan = async (req, res) => {
-  const doc = await Plan.findOne({ user: req.user._id });
+  let doc = await Plan.findOne({ user: req.user._id, isCurrent: true });
+
+  if (!doc) {
+    // fallback to most recent
+    doc = await Plan.findOne({ user: req.user._id }).sort({ createdAt: -1 });
+  }
 
   if (!doc) {
     return res.json({
@@ -218,9 +231,90 @@ export const getCurrentPlan = async (req, res) => {
   }
 
   res.json({
+    id: doc._id,
     plan: doc.weeklyPlan,
     groceryList: doc.groceryList,
     summary: doc.nutritionSummary,
     profile: doc.profileSnapshot,
   });
+};
+
+export const listPlans = async (req, res) => {
+  const docs = await Plan.find({ user: req.user._id }).sort({ createdAt: -1 });
+  const plans = docs.map((d) => ({ id: d._id, name: d.name, isCurrent: d.isCurrent, createdAt: d.createdAt }));
+  res.json({ plans });
+};
+
+export const updateCurrentPlan = async (req, res) => {
+  const userId = req.user._id;
+  const { plan } = req.body;
+
+  const doc = await Plan.findOne({ user: userId, isCurrent: true });
+  if (!doc) return res.status(404).json({ message: "No current plan" });
+
+  doc.weeklyPlan = plan;
+
+  const { groceryList, nutritionSummary } = buildGroceryAndSummary(plan);
+  doc.groceryList = groceryList;
+  doc.nutritionSummary = nutritionSummary;
+
+  await doc.save();
+
+  res.json({ message: "Saved", plan: doc.weeklyPlan });
+};
+
+export const getPlanById = async (req, res) => {
+  const doc = await Plan.findOne({ _id: req.params.id, user: req.user._id });
+
+  if (!doc) return res.status(404).json({ message: "Plan not found" });
+
+  res.json({
+    id: doc._id,
+    plan: doc.weeklyPlan,
+    groceryList: doc.groceryList,
+    summary: doc.nutritionSummary,
+    profile: doc.profileSnapshot,
+  });
+};
+
+export const selectPlan = async (req, res) => {
+  const planId = req.params.id;
+  const userId = req.user._id;
+
+  const doc = await Plan.findOne({ _id: planId, user: userId });
+  if (!doc) return res.status(404).json({ message: "Plan not found" });
+
+  await Plan.updateMany({ user: userId, isCurrent: true }, { isCurrent: false });
+
+  doc.isCurrent = true;
+  await doc.save();
+
+  res.json({ message: "Plan selected", id: doc._id });
+};
+
+export const swapMeal = async (req, res) => {
+  const { day, mealType, newRecipe } = req.body;
+  const userId = req.user._id;
+
+  if (!day || !mealType || !newRecipe) {
+    return res.status(400).json({ message: "Missing parameters" });
+  }
+
+  const plan = await Plan.findOne({ user: userId, isCurrent: true });
+  if (!plan) return res.status(404).json({ message: "No current plan" });
+
+  if (!plan.weeklyPlan?.[day]) {
+    return res.status(400).json({ message: "Invalid day" });
+  }
+
+  plan.weeklyPlan[day].meals[mealType] = newRecipe;
+
+  const { groceryList, nutritionSummary } = buildGroceryAndSummary(plan.weeklyPlan);
+
+  plan.groceryList = groceryList;
+  plan.nutritionSummary = nutritionSummary;
+
+  await plan.save();
+
+  res.json({ message: "Meal swapped", plan: plan.weeklyPlan });
 };

@@ -57,7 +57,7 @@ const MealPlannerGrid = ({ plan, setPlan, openRecipe }) => {
                         recipe={dayPlan.meals[type]}
                         day={day}
                         mealType={type}
-                        onClick={() => openRecipe(dayPlan.meals[type])}
+                        onClick={() => openRecipe(dayPlan.meals[type], day, type)}
                       />
                     </div>
                   ) : (

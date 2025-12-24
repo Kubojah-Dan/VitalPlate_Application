@@ -13,8 +13,9 @@ const MealChatbot = ({ plan }) => {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
-  const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -85,7 +86,7 @@ const MealChatbot = ({ plan }) => {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-3 border-t border-slate-800 flex gap-2">
+          <div className="p-3 border-t border-slate-800 flex gap-2 items-center">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -94,12 +95,42 @@ const MealChatbot = ({ plan }) => {
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button
+              onClick={async () => {
+                if (!input.trim()) return;
+                setSearchLoading(true);
+                try {
+                  const res = await apiFetch('/api/chat/search', { method: 'POST', token, body: { q: input, top: 5 } });
+                  setSuggestions(res.results || []);
+                } catch (e) {
+                  console.error(e);
+                } finally { setSearchLoading(false); }
+              }}
+              className="bg-slate-700 px-3 rounded-lg text-white"
+            >
+              🔍
+            </button>
+            <button
               onClick={sendMessage}
               className="bg-emerald-600 px-3 rounded-lg text-white"
             >
               <Send size={16} />
             </button>
           </div>
+
+          {suggestions.length > 0 && (
+            <div className="p-3 border-t border-slate-800 max-h-48 overflow-auto">
+              <div className="text-sm text-slate-400 mb-2">Related snippets</div>
+              {suggestions.map((s, i) => (
+                <div key={i} className="p-2 rounded hover:bg-slate-800/40 cursor-pointer mb-1">
+                  <div className="text-xs text-slate-400">Score: {(s.score||0).toFixed(3)}</div>
+                  <div className="text-sm" onClick={()=>{
+                    setInput(s.content);
+                    setSuggestions([]);
+                  }}>{s.content}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>

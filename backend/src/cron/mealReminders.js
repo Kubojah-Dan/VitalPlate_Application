@@ -1,9 +1,11 @@
 import cron from "node-cron";
 import User from "../models/User.js";
 import { sendWebPush } from "../utils/notifications.js";
+import { sendSMS } from "../utils/sendSMS.js";
 
 export const startMealReminders = () => {
-  cron.schedule("*/30 * * * *", async () => {
+  // run on the hour every hour
+  cron.schedule("0 * * * *", async () => {
     const now = new Date();
     const hour = now.getHours();
 
@@ -23,11 +25,15 @@ export const startMealReminders = () => {
 
     for (const user of users) {
       if (user.pushSubscription) {
-        await sendWebPush(user, `Time for ${meal} 🍽️`);
+        await sendWebPush(user.pushSubscription, `Time for ${meal} 🍽️`);
       }
 
-      if (user.phoneNumber) {
-        await sendSMS(user.phoneNumber, `VitalPlate: Time for ${meal}`);
+      if (user.profile?.phone && user.settings?.smsNotificationsEnabled) {
+        try {
+          await sendSMS(user.profile.phone, `VitalPlate: Time for ${meal}`);
+        } catch (err) {
+          console.error("SMS send failed:", err.message);
+        }
       }
     }
 

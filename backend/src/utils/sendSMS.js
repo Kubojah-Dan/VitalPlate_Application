@@ -1,12 +1,10 @@
 import twilio from "twilio";
 
-const client = twilio(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_TOKEN
-);
+const client = process.env.TWILIO_SID && process.env.TWILIO_TOKEN ? twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN) : null;
 
-await client.messages.create({
-  body: "🍽️ Time for your meal!",
-  from: process.env.TWILIO_PHONE,
-  to: user.phone,
-});
+export async function sendSMS(to, body) {
+  if (!client) throw new Error("Twilio client not configured");
+  return client.messages.create({ body, from: process.env.TWILIO_PHONE, to });
+}
+
+export default sendSMS;

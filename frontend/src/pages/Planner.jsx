@@ -38,7 +38,7 @@ const Planner = () => {
     }
   };
 
-  const openModal = (recipe) => setModalRecipe(recipe);
+  const openModal = (recipe, day, mealType) => setModalRecipe({ recipe, day, mealType });
   const closeModal = () => setModalRecipe(null);
 
   useEffect(() => {
@@ -95,7 +95,12 @@ const Planner = () => {
       </main>
 
       {modalRecipe && (
-        <RecipeModal recipe={modalRecipe} onClose={closeModal} />
+        <RecipeModal
+          recipe={modalRecipe.recipe}
+          day={modalRecipe.day}
+          mealType={modalRecipe.mealType}
+          onClose={closeModal}
+        />
       )}
     </div>
   );

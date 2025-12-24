@@ -1,9 +1,11 @@
 import express from "express";
 import { protect } from "../middleware/auth.js";
-import { sendWebPush } from "../utils/notifications.js";
+import { subscribePush, testNotification } from "../controllers/notificationController.js";
 
 const router = express.Router();
 
-router.post("/subscribe", protect, sendWebPush);
+router.post("/subscribe", protect, subscribePush);
+router.post("/test", protect, testNotification);
+router.post("/test-sms", protect, testSMS);
 
 export default router;

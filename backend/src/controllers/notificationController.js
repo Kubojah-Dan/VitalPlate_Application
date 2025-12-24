@@ -1,4 +1,5 @@
 import { sendWebPush } from "../utils/notifications.js";
+import { sendSMS } from "../utils/sendSMS.js";
 import User from "../models/User.js";
 
 export const subscribePush = async (req, res) => {
@@ -22,4 +23,17 @@ export const testNotification = async (req, res) => {
   await sendWebPush(user.pushSubscription, "🍽️ Time for your next meal!");
 
   res.json({ message: "Notification sent" });
+};
+
+export const testSMS = async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user?.profile?.phone) return res.status(400).json({ message: "No phone on profile" });
+
+  try {
+    await sendSMS(user.profile.phone, "VitalPlate test message: 🍽️ This is a test.");
+    res.json({ message: "SMS sent" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

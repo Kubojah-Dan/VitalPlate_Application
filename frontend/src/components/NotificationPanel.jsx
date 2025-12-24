@@ -1,4 +1,7 @@
 import { Coffee, Sun, Moon, Utensils, Clock } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext.jsx";
+import { subscribeUser } from "../utils/subscribeToPush.js";
 
 const NotificationPanel = () => {
   const currentHour = new Date().getHours();
@@ -11,6 +14,22 @@ const NotificationPanel = () => {
   ];
 
   const active = reminders.find(r => currentHour <= r.time) || reminders[0];
+
+  const { token } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const enablePush = async () => {
+    try {
+      setLoading(true);
+      await subscribeUser(token);
+      alert("Subscribed to push notifications");
+    } catch (err) {
+      console.error(err);
+      alert("Push subscription failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-xl shadow-xl">
@@ -42,6 +61,12 @@ const NotificationPanel = () => {
             </div>
           );
         })}
+
+        <div className="mt-3">
+          <button onClick={enablePush} disabled={loading} className="w-full bg-emerald-600 px-3 py-2 rounded-lg">
+            {loading ? 'Subscribing...' : 'Enable Push Notifications'}
+          </button>
+        </div>
       </div>
     </div>
   );

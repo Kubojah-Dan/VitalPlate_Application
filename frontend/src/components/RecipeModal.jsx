@@ -14,7 +14,29 @@ import {
   Tooltip as ReTooltip,
 } from "recharts";
 
-const RecipeModal = ({ recipe, onClose }) => {
+import { useAuth } from "../context/AuthContext.jsx";
+import { useEffect, useState } from "react";
+
+const RecipeModal = ({ recipe, onClose, day: currentDay, mealType: currentMealType }) => {
+  const { token } = useAuth();
+  const [days, setDays] = useState([]);
+  const [swapDay, setSwapDay] = useState(currentDay || "Monday");
+  const [swapType, setSwapType] = useState(currentMealType || "Dinner");
+  const [isSwapping, setIsSwapping] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/plan", { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        const daysList = data.plan ? Object.keys(data.plan) : ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+        setDays(daysList);
+      } catch (e) {
+        setDays(["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]);
+      }
+    })();
+  }, [token]);
+
   if (!recipe) return null;
 
   const macroData = [
@@ -46,8 +68,10 @@ const RecipeModal = ({ recipe, onClose }) => {
       >
         <div className="relative h-48 bg-gradient-to-r from-emerald-900 to-slate-900 flex items-end p-8 border-b border-slate-800">
           <button
+            type="button"
+            aria-label="Close recipe"
             onClick={onClose}
-            className="absolute top-4 right-4 bg-black/20 hover:bg-black/40 p-2 rounded-full text-white transition"
+            className="absolute top-4 right-4 z-20 bg-black/20 hover:bg-black/40 p-2 rounded-full text-white transition"
           >
             <X size={24} />
           </button>
@@ -135,6 +159,36 @@ const RecipeModal = ({ recipe, onClose }) => {
                   )
                 )}
               </ol>
+            </div>
+
+            <div className="mt-6 bg-slate-900/40 border border-slate-800 p-4 rounded-lg">
+              <h4 className="font-semibold text-white mb-2">Replace another meal with this one</h4>
+              <div className="flex gap-2 mb-3">
+                <select value={swapDay} onChange={(e)=>setSwapDay(e.target.value)} className="bg-slate-950 border border-slate-800 px-3 py-2 rounded">
+                  {days.map(d => <option key={d}>{d}</option>)}
+                </select>
+                <select value={swapType} onChange={(e)=>setSwapType(e.target.value)} className="bg-slate-950 border border-slate-800 px-3 py-2 rounded">
+                  {['Breakfast','Lunch','Dinner','Snack'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={async ()=>{
+                    setIsSwapping(true);
+                    try {
+                      await fetch('/api/plan/swap', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ day: swapDay, mealType: swapType, newRecipe: recipe }) });
+                      window.location.reload();
+                    } catch (e) {
+                      alert('Swap failed');
+                    } finally { setIsSwapping(false); }
+                  }}
+                  className="bg-emerald-600 px-4 py-2 rounded text-black"
+                  disabled={isSwapping}
+                >
+                  {isSwapping ? 'Swapping...' : `Replace ${swapType} on ${swapDay}`}
+                </button>
+                <button onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
+              </div>
             </div>
           </div>
 

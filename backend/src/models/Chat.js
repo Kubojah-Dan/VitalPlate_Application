@@ -4,6 +4,7 @@ const MessageSchema = new mongoose.Schema(
   {
     role: { type: String, enum: ["user", "assistant"], required: true },
     content: String,
+    embedding: { type: [Number], default: [] },
   },
   { _id: false }
 );

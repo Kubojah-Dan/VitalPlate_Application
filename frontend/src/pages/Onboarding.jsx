@@ -25,6 +25,8 @@ const Onboarding = () => {
     age: user?.profile?.age?.toString() || '30',
     weight: user?.profile?.weight?.toString() || '70',
     gender: user?.profile?.gender || 'Female',
+    phone: user?.profile?.phone || '',
+    smsOptIn: false,
     conditions: user?.profile?.conditions || [],
     goal: user?.profile?.goal || 'Maintain Health',
     dietaryRestrictions: user?.profile?.dietaryRestrictions || ''
@@ -56,12 +58,17 @@ const Onboarding = () => {
       weight: parseInt(formData.weight),
     };
 
+    // Save profile and settings on the user record
+    await apiFetch("/api/user/profile", { method: "PUT", token, body: profile });
+    await apiFetch("/api/user/settings", { method: "PUT", token, body: { smsNotificationsEnabled: !!formData.smsOptIn } });
+
     const result = await apiFetch("/api/plan/generate", {
       method: "POST",
-      token, 
+      token,
       body: profile,
     });
 
+    // update local auth context
     login(token, { ...user, profile });
     navigate("/dashboard");
 
@@ -128,6 +135,20 @@ const Onboarding = () => {
                         className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-900 outline-none transition placeholder-slate-500"
                         placeholder="Jane Doe"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-300 mb-1">Phone (optional)</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 text-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-900 outline-none transition placeholder-slate-500"
+                        placeholder="+1234567890"
+                      />
+                      <label className="flex items-center gap-2 mt-2 text-sm text-slate-400">
+                        <input type="checkbox" checked={formData.smsOptIn} onChange={(e)=>handleInputChange('smsOptIn', e.target.checked)} />
+                        <span>Opt in to SMS meal time reminders</span>
+                      </label>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-300 mb-1">

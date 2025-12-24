@@ -30,6 +30,14 @@ VitalPlate is a full-stack MERN meal planning app that generates weekly nutritio
 
 ---
 
+## 🆕 Recent updates
+- Multiple meal plans per user; view & select your active plan from Profile.  
+- Replace/swaps: replace any meal slot with another recipe.  
+- SMS reminders (Twilio) and Web Push reminders (VAPID).  
+- Chat embeddings search for context-aware follow-ups.
+
+---
+
 ## 📁 Project Structure
 
 VitalPlate/
