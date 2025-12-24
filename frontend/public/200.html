@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VitalPlate</title>
+  </head>
+  <body>
+    <!-- SPA fallback: rendered when the host serves 200.html for unknown paths. 
+         For best behavior, also include `_redirects` with `/* /index.html 200`. -->
+    <script>
+      // If server serves this file for unknown SPA routes, replace the path with / while preserving query
+      // so the client router can mount and read the query params (e.g., ?token=...)
+      (function(){
+        const q = location.search || '';
+        const hash = location.hash || '';
+        const newUrl = '/' + (q || '') + (hash || '');
+        location.replace(newUrl);
+      })();
+    </script>
+  </body>
+</html>
