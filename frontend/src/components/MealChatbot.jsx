@@ -15,6 +15,7 @@ const MealChatbot = ({ plan }) => {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const bottomRef = useRef(null);
 
 
   useEffect(() => {

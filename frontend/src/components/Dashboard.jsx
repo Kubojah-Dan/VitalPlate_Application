@@ -187,7 +187,7 @@ const DashboardComponent = ({ plan, profile }) => {
             Weekly Calorie Intake
           </h3>
           <div className="flex-1 min-h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={250}>
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
                 <XAxis
