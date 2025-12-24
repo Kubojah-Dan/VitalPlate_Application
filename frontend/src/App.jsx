@@ -1,5 +1,6 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext.jsx';
 import Landing from './pages/Landing.jsx';
 import OAuthSuccess from "./pages/OAuthSuccess";
 import Login from './pages/Login.jsx';
@@ -12,7 +13,6 @@ import RecipeLibrary from './pages/RecipeLibrary.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import NotificationsPage from './pages/NotificationsPage.jsx';
-import { useAuth } from './context/AuthContext.jsx';
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
@@ -21,6 +21,32 @@ const PrivateRoute = ({ children }) => {
 };
 
 const App = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (!token) return;
+
+    // Remove token from URL to avoid leaking it in history
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+
+    localStorage.setItem('token', token);
+
+    const API = import.meta.env.VITE_API_BASE_URL || 'https://vitalplate-application.onrender.com';
+    fetch(`${API}/api/user/profile`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => res.json())
+      .then((profile) => {
+        login(token, { profile });
+        navigate('/onboarding', { replace: true });
+      })
+      .catch(() => navigate('/login', { replace: true }));
+  }, [login, navigate]);
+
   return (
     <Routes>
       <Route path="/" element={<Landing />} />

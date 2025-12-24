@@ -82,7 +82,8 @@ router.get(
     );
 
     const CLIENT_URL = process.env.CLIENT_URL || process.env.FRONTEND_URL || "http://localhost:3000";
-    res.redirect(`${CLIENT_URL}/oauth-success?token=${token}`);
+    // Redirect to root with token in query so static hosts that don't serve unknown paths still return the SPA
+    res.redirect(`${CLIENT_URL}/?token=${token}`);
   }
 );
 
@@ -102,7 +103,8 @@ router.get(
     );
 
     const CLIENT_URL = process.env.CLIENT_URL || process.env.FRONTEND_URL || "http://localhost:3000";
-    res.redirect(`${CLIENT_URL}/oauth-success?token=${token}`);
+    // Redirect to root with token in query so static hosts that don't serve unknown paths still return the SPA
+    res.redirect(`${CLIENT_URL}/?token=${token}`);
   }
 );
 
