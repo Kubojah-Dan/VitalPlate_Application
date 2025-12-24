@@ -203,7 +203,7 @@ const RecipeModal = ({ recipe, onClose, day: currentDay, mealType: currentMealTy
             </h3>
 
             <div className="mb-8 h-48">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie
                     data={macroData}

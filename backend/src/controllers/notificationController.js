@@ -30,6 +30,10 @@ export const testSMS = async (req, res) => {
 
   if (!user?.profile?.phone) return res.status(400).json({ message: "No phone on profile" });
 
+  if (!process.env.TWILIO_SID || !process.env.TWILIO_TOKEN || !process.env.TWILIO_PHONE) {
+    return res.status(400).json({ message: "Twilio not configured. Set TWILIO_SID, TWILIO_TOKEN and TWILIO_PHONE" });
+  }
+
   try {
     await sendSMS(user.profile.phone, "VitalPlate test message: 🍽️ This is a test.");
     res.json({ message: "SMS sent" });

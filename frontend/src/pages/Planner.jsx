@@ -15,6 +15,19 @@ const Planner = () => {
 
   const loadPlan = async () => {
     try {
+      // check for preview plan saved by Profile "View" action
+      const preview = localStorage.getItem("previewPlan");
+      if (preview) {
+        try {
+          const obj = JSON.parse(preview);
+          setPlan(obj.plan || obj);
+          localStorage.removeItem("previewPlan");
+          return;
+        } catch (err) {
+          localStorage.removeItem("previewPlan");
+        }
+      }
+
       const res = await apiFetch("/api/plan", { token });
 
       const weeklyPlan = res?.plan || res?.weeklyPlan || res || null;

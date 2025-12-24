@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { User, Activity, AlertCircle, Save } from "lucide-react";
 import { apiFetch } from "../apiClient";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [settings, setSettings] = useState(null);
   const [plans, setPlans] = useState([]);
@@ -177,7 +179,8 @@ const ProfilePage = () => {
                     <button
                       onClick={async () => {
                         const data = await apiFetch(`/api/plan/${p.id}`, { token });
-                        setPlan(data.plan);
+                        localStorage.setItem('previewPlan', JSON.stringify({ plan: data.plan, profile: data.profile }));
+                        navigate('/planner');
                       }}
                       className="px-3 py-2 border border-slate-700 rounded"
                     >

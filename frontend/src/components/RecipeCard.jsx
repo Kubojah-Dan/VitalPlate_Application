@@ -10,11 +10,13 @@ const RecipeCard = ({
   if (!recipe) return null;
 
   const seed = recipe.id || `${day}-${mealType}`;
-  const imageUrl =
+  let imageUrl =
     recipe.image ||
     `https://picsum.photos/seed/${encodeURIComponent(
       seed
     )}/300/200`;
+
+  if (imageUrl?.startsWith("http:")) imageUrl = imageUrl.replace(/^http:/, "https:");
 
   return (
     <button

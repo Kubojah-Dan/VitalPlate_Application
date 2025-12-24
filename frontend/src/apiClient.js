@@ -20,6 +20,9 @@ export async function apiFetch(url, options = {}) {
   const text = await res.text();
 
   if (!res.ok) {
+    if (res.status === 404 && fullUrl.startsWith("/api")) {
+      throw new Error(`Request failed 404: ${fullUrl}. It looks like the frontend couldn't reach the backend. Ensure VITE_API_BASE_URL is set to your backend URL in production.`);
+    }
     throw new Error(`Request failed: ${res.status} - ${text}`);
   }
 

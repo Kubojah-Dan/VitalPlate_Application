@@ -140,9 +140,11 @@ const DashboardComponent = ({ plan, profile }) => {
               if (!meal) return null;
 
               const seed = meal.id || `${todaysPlan.day}-${type}`;
-              const imageUrl =
+              let imageUrl =
                 meal.image ||
                 `https://picsum.photos/seed/${encodeURIComponent(seed)}/200/200`;
+
+              if (imageUrl?.startsWith("http:")) imageUrl = imageUrl.replace(/^http:/, "https:");
 
               return (
                 <button
