@@ -108,6 +108,7 @@ export const generatePlan = async (req, res) => {
     const prompt = `
 Return ONLY valid JSON.
 NO text, NO markdown.
+Use digits for numeric values (e.g., 50) — do not spell out numbers.
 
 Schema:
 {
@@ -142,7 +143,62 @@ ${JSON.stringify(profile)}
       messages: [{ role: "user", content: prompt }],
     });
 
-    const raw = JSON.parse(completion.choices[0].message.content);
+    const aiContent = completion.choices[0].message.content;
+
+    let raw = null;
+    try {
+      raw = JSON.parse(aiContent);
+    } catch (parseErr) {
+      console.warn("AI produced invalid JSON, attempting to extract JSON block and repair...");
+
+      // Try to extract JSON substring between first '{' and last '}'
+      const first = aiContent.indexOf("{");
+      const last = aiContent.lastIndexOf("}");
+      if (first !== -1 && last !== -1 && last > first) {
+        const sub = aiContent.substring(first, last + 1);
+        try {
+          raw = JSON.parse(sub);
+        } catch (e) {
+          // continue to repair
+        }
+      }
+
+      // If still not parsed, ask the model to return corrected JSON only
+      if (!raw) {
+        try {
+          const repair = await openai.chat.completions.create({
+            model: "openai/gpt-oss-120b",
+            temperature: 0,
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a JSON fixer. The user expects a single valid JSON object that conforms to the schema in the earlier prompt. Respond with ONLY the corrected JSON. Convert any spelled-out numbers (e.g., 'fifty') to numeric digits.",
+              },
+              { role: "user", content: `Please fix this invalid JSON and return only the corrected JSON:\n\n${aiContent}` },
+            ],
+          });
+
+          const fixed = repair.choices[0].message.content;
+          try {
+            raw = JSON.parse(fixed);
+          } catch (e) {
+            const f = fixed.indexOf("{");
+            const l = fixed.lastIndexOf("}");
+            if (f !== -1 && l !== -1 && l > f) {
+              raw = JSON.parse(fixed.substring(f, l + 1));
+            }
+          }
+        } catch (e) {
+          console.error("Repair attempt failed:", e.message);
+        }
+      }
+
+      if (!raw) {
+        console.error("Failed to parse AI response as JSON. Raw content:\n", aiContent);
+        throw new Error("AI returned invalid JSON and repair attempt failed");
+      }
+    }
 
     const weeklyPlan = {};
 
