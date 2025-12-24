@@ -17,7 +17,8 @@ const OAuthSuccess = () => {
 
     localStorage.setItem("token", token);
 
-    fetch("https://vitalplate-application.onrender.com/api/user/profile", {
+    const API = import.meta.env.VITE_API_BASE_URL || "https://vitalplate-application.onrender.com";
+    fetch(`${API}/api/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

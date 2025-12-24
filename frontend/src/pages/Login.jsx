@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../apiClient.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
-const API_URL = "https://vitalplate-application.onrender.com";
+const API_URL = import.meta.env.VITE_API_BASE_URL || "https://vitalplate-application.onrender.com";
 //"http://localhost:5000";
 
 const Login = () => {

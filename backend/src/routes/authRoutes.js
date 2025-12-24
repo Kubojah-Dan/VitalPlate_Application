@@ -81,7 +81,8 @@ router.get(
       { expiresIn: "7d" }
     );
 
-    res.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+    const CLIENT_URL = process.env.CLIENT_URL || process.env.FRONTEND_URL || "http://localhost:3000";
+    res.redirect(`${CLIENT_URL}/oauth-success?token=${token}`);
   }
 );
 
@@ -100,7 +101,8 @@ router.get(
       { expiresIn: "7d" }
     );
 
-    res.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+    const CLIENT_URL = process.env.CLIENT_URL || process.env.FRONTEND_URL || "http://localhost:3000";
+    res.redirect(`${CLIENT_URL}/oauth-success?token=${token}`);
   }
 );
 
