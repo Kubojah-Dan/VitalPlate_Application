@@ -1,5 +1,5 @@
 import express from "express";
-import { generatePlan, getCurrentPlan, listPlans, getPlanById, selectPlan } from "../controllers/planController.js";
+import { generatePlan, getCurrentPlan, listPlans, getPlanById, selectPlan, updateCurrentPlan, swapMeal } from "../controllers/planController.js";
 import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
