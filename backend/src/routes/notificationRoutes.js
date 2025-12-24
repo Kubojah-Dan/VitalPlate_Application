@@ -1,6 +1,6 @@
 import express from "express";
 import { protect } from "../middleware/auth.js";
-import { subscribePush, testNotification } from "../controllers/notificationController.js";
+import { subscribePush, testNotification, testSMS } from "../controllers/notificationController.js";
 
 const router = express.Router();
 
