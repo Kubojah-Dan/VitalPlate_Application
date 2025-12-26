@@ -1,3 +1,5 @@
+import { apiFetch } from "../apiClient";
+
 export async function subscribeUser(token) {
   const registration = await navigator.serviceWorker.ready;
 
@@ -6,12 +8,5 @@ export async function subscribeUser(token) {
     applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY,
   });
 
-  await fetch("/api/notifications/subscribe", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(subscription),
-  });
+  await apiFetch('/notifications/subscribe', { method: 'POST', token, body: subscription });
 }

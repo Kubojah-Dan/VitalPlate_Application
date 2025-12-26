@@ -16,9 +16,12 @@ import {
 
 import { useAuth } from "../context/AuthContext.jsx";
 import { useEffect, useState } from "react";
+import { apiFetch } from "../apiClient";
+import { useNavigate } from "react-router-dom";
 
 const RecipeModal = ({ recipe, onClose, day: currentDay, mealType: currentMealType }) => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [days, setDays] = useState([]);
   const [swapDay, setSwapDay] = useState(currentDay || "Monday");
   const [swapType, setSwapType] = useState(currentMealType || "Dinner");
@@ -27,8 +30,7 @@ const RecipeModal = ({ recipe, onClose, day: currentDay, mealType: currentMealTy
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/plan", { headers: { Authorization: `Bearer ${token}` } });
-        const data = await res.json();
+        const data = await apiFetch('/plan', { token });
         const daysList = data.plan ? Object.keys(data.plan) : ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
         setDays(daysList);
       } catch (e) {
@@ -176,10 +178,11 @@ const RecipeModal = ({ recipe, onClose, day: currentDay, mealType: currentMealTy
                   onClick={async ()=>{
                     setIsSwapping(true);
                     try {
-                      await fetch('/api/plan/swap', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ day: swapDay, mealType: swapType, newRecipe: recipe }) });
-                      window.location.reload();
+                      await apiFetch('/plan/swap', { method: 'POST', token, body: { day: swapDay, mealType: swapType, newRecipe: recipe } });
+                      onClose();
+                      navigate('/planner');
                     } catch (e) {
-                      alert('Swap failed');
+                      alert('Swap failed: ' + (e.message || e));
                     } finally { setIsSwapping(false); }
                   }}
                   className="bg-emerald-600 px-4 py-2 rounded text-black"

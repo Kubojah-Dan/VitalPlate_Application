@@ -7,9 +7,12 @@ export async function apiFetch(url, options = {}) {
   if (body) headers["Content-Type"] = "application/json";
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const fullUrl = API
-    ? `${API}${url}`       
-    : `/api${url}`;         
+  let fullUrl;
+  if (API) {
+    fullUrl = url.startsWith("http") ? url : `${API}${url.startsWith("/") ? "" : "/"}${url}`;
+  } else {
+    fullUrl = url.startsWith("/api") ? url : `/api${url.startsWith("/") ? url : `/${url}`}`;
+  }
 
   const res = await fetch(fullUrl, {
     method,
@@ -20,7 +23,7 @@ export async function apiFetch(url, options = {}) {
   const text = await res.text();
 
   if (!res.ok) {
-    if (res.status === 404 && fullUrl.startsWith("/api")) {
+    if (res.status === 404 && fullUrl.includes("/api")) {
       throw new Error(`Request failed 404: ${fullUrl}. It looks like the frontend couldn't reach the backend. Ensure VITE_API_BASE_URL is set to your backend URL in production.`);
     }
     throw new Error(`Request failed: ${res.status} - ${text}`);

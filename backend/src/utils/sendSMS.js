@@ -1,6 +1,6 @@
 import twilio from "twilio";
 
-const client = process.env.TWILIO_SID && process.env.TWILIO_TOKEN ? twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN) : null;
+const client = process.env.TWILIO_SID && process.env.TWILIO_AUTH_TOKEN ? twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN) : null;
 
 export async function sendSMS(to, body) {
   if (!client) throw new Error("Twilio client not configured");

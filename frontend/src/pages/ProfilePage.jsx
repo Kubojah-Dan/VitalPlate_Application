@@ -215,7 +215,7 @@ const ProfilePage = () => {
                   onClick={async () => {
                     await save();
                     try {
-                      await apiFetch('/api/notifications/test-sms', { method: 'POST', token });
+                      await apiFetch('/notifications/test-sms', { method: 'POST', token });
                       alert('Test SMS sent');
                     } catch (e) { alert('SMS test failed'); }
                   }}
@@ -226,7 +226,7 @@ const ProfilePage = () => {
                   onClick={async () => {
                     await save();
                     try {
-                      await apiFetch('/api/notifications/test', { method: 'POST', token });
+                      await apiFetch('/notifications/test', { method: 'POST', token });
                       alert('Test Push sent');
                     } catch (e) { alert('Push test failed'); }
                   }}

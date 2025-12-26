@@ -31,7 +31,7 @@ const MealChatbot = ({ plan }) => {
     setLoading(true);
 
     try {
-      const res = await apiFetch("/api/chat/meal-chat", {
+      const res = await apiFetch('/chat/meal-chat', {
         method: "POST",
         token,
         body: {
@@ -62,7 +62,7 @@ const MealChatbot = ({ plan }) => {
         {open ? <X /> : <MessageCircle />}
       </button>
       {open && (
-        <div className="fixed bottom-24 right-6 w-[420px] h-[520px] bg-slate-900 border border-slate-800 rounded-2xl shadow-xl flex flex-col z-50">
+        <div className="fixed bottom-6 left-4 right-4 md:bottom-24 md:right-6 md:left-auto w-auto md:w-[420px] max-w-[calc(100%-32px)] md:max-w-none h-[70vh] md:h-[520px] bg-slate-900 border border-slate-800 rounded-lg md:rounded-2xl shadow-xl flex flex-col z-50">
 
           <div className="p-4 border-b border-slate-800 font-semibold text-white">
             VitalPlate Assistant 🤖
@@ -100,7 +100,7 @@ const MealChatbot = ({ plan }) => {
                 if (!input.trim()) return;
                 setSearchLoading(true);
                 try {
-                  const res = await apiFetch('/api/chat/search', { method: 'POST', token, body: { q: input, top: 5 } });
+                  const res = await apiFetch('/chat/search', { method: 'POST', token, body: { q: input, top: 5 } });
                   setSuggestions(res.results || []);
                 } catch (e) {
                   console.error(e);
