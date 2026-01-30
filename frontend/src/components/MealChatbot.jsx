@@ -31,7 +31,7 @@ const MealChatbot = ({ plan }) => {
     setLoading(true);
 
     try {
-      const res = await apiFetch('/chat/meal-chat', {
+      const res = await apiFetch('/api/chat/meal-chat', {
         method: "POST",
         token,
         body: {
@@ -100,7 +100,7 @@ const MealChatbot = ({ plan }) => {
                 if (!input.trim()) return;
                 setSearchLoading(true);
                 try {
-                  const res = await apiFetch('/chat/search', { method: 'POST', token, body: { q: input, top: 5 } });
+                  const res = await apiFetch('/api/chat/search', { method: 'POST', token, body: { q: input, top: 5 } });
                   setSuggestions(res.results || []);
                 } catch (e) {
                   console.error(e);
