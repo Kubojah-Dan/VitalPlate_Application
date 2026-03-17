@@ -109,6 +109,9 @@ export const generatePlan = async (req, res) => {
 Return ONLY valid JSON.
 NO text, NO markdown.
 Use digits for numeric values (e.g., 50) — do not spell out numbers.
+Do NOT include text, explanations, markdown, or labels.
+Do NOT include words like "Menu", "Here is your plan".
+Output must be STRICT JSON.
 
 Schema:
 {
