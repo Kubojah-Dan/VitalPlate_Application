@@ -1,6 +1,6 @@
 # 🥗 VitalPlate - Personalized AI Meal Planner
 
-VitalPlate is a full-stack MERN meal planning app that generates weekly nutrition plans tailored to each user's health conditions, preferences, and goals — powered by Google Gemini AI.
+VitalPlate is a full-stack MERN meal planning app that generates weekly nutrition plans tailored to each user's health conditions, preferences, and goals — powered by Open AI (Groq).
 
 ---
 
@@ -66,7 +66,7 @@ VitalPlate/
 
 ### 1️⃣ Clone & Install Dependencies
 
-git clone https://github.com/YOUR_USERNAME/VitalPlate.git
+git clone https://github.com/Kubojah-Dan/VitalPlate_Application.git
 
 cd VitalPlate
 cd frontend && npm install
@@ -87,15 +87,15 @@ GEMINI_API_KEY=your_google_gemini_key
 MONGO_DATA_API_KEY=your_mongo_data_api_key
 MONGO_DATA_API_URL=https://data.mongodb-api.com/app/<APP_ID>/endpoint/data/v1
 
-# OAuth / Deployment settings (important)
-# Set these in your deployment environment (Render/Heroku/Vercel) — do NOT commit them
-CLIENT_URL=https://your-frontend-domain.com      # where users land (example: https://vitalplate.app)
-BACKEND_URL=https://your-backend-domain.com      # base URL for callbacks (example: https://api.vitalplate.app)
+# OAuth / Deployment settings
+<br/>
+CLIENT_URL=https://your-frontend-domain.com     
+BACKEND_URL=https://your-backend-domain.com      
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
-# Optional: explicitly set provider callback URLs if your provider needs exact matching (overrides BACKEND_URL):
+
 GOOGLE_CALLBACK_URL=https://your-backend-domain.com/api/auth/google/callback
 GITHUB_CALLBACK_URL=https://your-backend-domain.com/api/auth/github/callback
 
@@ -174,25 +174,6 @@ OS junk
 Thumbs.db
 
 
----
 
-### 🔥 Next Step:  
-Choose your database connection method:
-
-A️⃣ Keep trying **direct Mongoose → fix firewall**  
-B️⃣ Switch entire backend to **MongoDB Data API** → works instantly anywhere
-
-Reply:
-
-**A or B — Which DB solution do you want?**  
-(We already have the code ready for B)
-
----
-
-I can apply the changes automatically for you — just say:
-
-> Convert backend fully to MongoDB Data API
-
-You’re almost ready to deploy to GitHub + Render + Vercel 🚀
 
 
